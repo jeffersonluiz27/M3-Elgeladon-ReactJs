@@ -1,4 +1,5 @@
 import 'Home.css';
+import PaletaLista from 'PaletaLista';
 import sacola from 'assets/icons/sacola.svg';
 import logo from 'assets/images/logo-el-geladon.png';
 
@@ -28,7 +29,9 @@ const Home = () => {
 					</div>
 				</div>
 			</div>
-			<div className="Home__container"></div>
+			<div className="Home__container">
+				<PaletaLista />
+			</div>
 		</div>
 	);
 };
