@@ -1,4 +1,4 @@
-import 'PaletaLista.css';
+import './PaletaLista.css';
 import { paletas } from 'mocks/paletas.js';
 import { useState } from 'react';
 
