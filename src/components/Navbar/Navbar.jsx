@@ -1,7 +1,7 @@
 import './Navbar.css';
 
 import sacola from 'assets/icons/sacola.svg';
-import logo from 'assets/images/logo-el-geladon.png';
+import logo from 'assets/logo-el-geladon.png';
 
 function Navbar() {
 	return (
