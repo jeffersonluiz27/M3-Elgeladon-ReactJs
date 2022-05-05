@@ -1,5 +1,5 @@
 import './AdicionaPaletaModal.css';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Modal from 'components/Modal/Modal';
 
 function AdicionaPaletaModal({ closeModal }) {
@@ -12,10 +12,26 @@ function AdicionaPaletaModal({ closeModal }) {
 	};
 
 	const [state, setState] = useState(form);
+	const [canDisable, setCanDisable] = useState(true);
+
+	const canDisableSendButton = () => {
+		const response = !Boolean(
+			state.descricao.length &&
+				state.foto.length &&
+				state.sabor.length &&
+				state.preco.length
+		);
+
+		setCanDisable(response);
+	};
 
 	const handleChange = (e, name) => {
 		setState({ ...state, [name]: e.target.value });
 	};
+
+	useEffect(() => {
+		canDisableSendButton();
+	});
 
 	return (
 		<Modal closeModal={closeModal}>
@@ -32,6 +48,7 @@ function AdicionaPaletaModal({ closeModal }) {
 							placeholder="10,00"
 							type="text"
 							value={state.preco}
+							required
 							onChange={(e) => handleChange(e, 'preco')}
 						/>
 					</div>
@@ -45,6 +62,7 @@ function AdicionaPaletaModal({ closeModal }) {
 							placeholder="Chocolate"
 							type="text"
 							value={state.sabor}
+							required
 							onChange={(e) => handleChange(e, 'sabor')}
 						/>
 					</div>
@@ -71,6 +89,7 @@ function AdicionaPaletaModal({ closeModal }) {
 							placeholder="Detalhe o produto"
 							type="text"
 							value={state.descricao}
+							required
 							onChange={(e) => handleChange(e, 'descricao')}
 						/>
 					</div>
@@ -87,15 +106,18 @@ function AdicionaPaletaModal({ closeModal }) {
 							type="file"
 							accept="image/png, image/gif, image/jpeg"
 							value={state.foto}
+							required
 							onChange={(e) => handleChange(e, 'foto')}
 						/>
 					</div>
 
-					<input
+					<button
 						className="AdicionaPaletaModal__enviar"
-						type="submit"
-						value="Enviar"
-					/>
+						type="button"
+						disabled={canDisable}
+					>
+						Enviar
+					</button>
 				</form>
 			</div>
 		</Modal>
