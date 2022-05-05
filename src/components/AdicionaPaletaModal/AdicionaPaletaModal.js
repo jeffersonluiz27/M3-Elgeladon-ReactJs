@@ -1,8 +1,9 @@
 import './AdicionaPaletaModal.css';
 import { useState, useEffect } from 'react';
 import Modal from 'components/Modal/Modal';
+import { PaletaService } from 'services/PaletaService';
 
-function AdicionaPaletaModal({ closeModal }) {
+function AdicionaPaletaModal({ closeModal, onCreatePaleta }) {
 	const form = {
 		preco: '',
 		sabor: '',
@@ -33,10 +34,31 @@ function AdicionaPaletaModal({ closeModal }) {
 		canDisableSendButton();
 	});
 
+	const createPaleta = async () => {
+		const renomeiaCaminhoFoto = (fotoPath) => fotoPath.split('\\').pop();
+
+		const { sabor, recheio, descricao, preco, foto } = state;
+
+		const titulo = sabor + (recheio && ' com ' + recheio);
+
+		const paleta = {
+			titulo: titulo,
+			sabor,
+			descricao,
+			recheio,
+			preco,
+			foto: `assets/images/${renomeiaCaminhoFoto(foto)}`,
+		};
+
+		const response = await PaletaService.create(paleta);
+		onCreatePaleta(response);
+		closeModal();
+	};
+
 	return (
 		<Modal closeModal={closeModal}>
 			<div className="AdicionaPaletaModal">
-				<form autocomplete="off">
+				<form autoComplete="off">
 					<h2> Adicionar ao Cardápio </h2>
 					<div>
 						<label className="AdicionaPaletaModal__text" htmlFor="preco">
@@ -115,6 +137,7 @@ function AdicionaPaletaModal({ closeModal }) {
 						className="AdicionaPaletaModal__enviar"
 						type="button"
 						disabled={canDisable}
+						onClick={createPaleta}
 					>
 						Enviar
 					</button>
