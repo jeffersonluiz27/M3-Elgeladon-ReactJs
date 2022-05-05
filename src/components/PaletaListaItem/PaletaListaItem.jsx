@@ -1,4 +1,5 @@
 import './PaletaListaItem.css';
+import { ActionMode } from 'constants/index';
 
 function PaletaListaItem({
 	paleta,
@@ -7,6 +8,7 @@ function PaletaListaItem({
 	onRemove,
 	onAdd,
 	clickItem,
+	mode,
 }) {
 	const badgeCounter = (canRender) =>
 		Boolean(canRender) && (
@@ -16,6 +18,7 @@ function PaletaListaItem({
 	const removeButton = (canRender, index) =>
 		Boolean(canRender) && (
 			<button
+				disabled={mode !== ActionMode.NORMAL}
 				className="Acoes__remover"
 				onClick={(e) => {
 					e.stopPropagation();
@@ -25,15 +28,23 @@ function PaletaListaItem({
 				remover
 			</button>
 		);
+
+	const badgeAction = (canRender) => {
+		if (canRender)
+			return <span className="PaletaListaItem__tag"> {mode} </span>;
+	};
+
 	return (
 		<div className="PaletaListaItem" onClick={() => clickItem(paleta.id)}>
 			{badgeCounter(quantidadeSelecionada, index)}
+			{badgeAction(mode !== ActionMode.NORMAL)}
 			<div>
 				<div className="PaletaListaItem__titulo"> {paleta.titulo} </div>
 				<div className="PaletaListaItem__preco"> R$ {paleta.preco} </div>
 				<div className="PaletaListaItem__descricao"> {paleta.descricao} </div>
 				<div className="PaletaListaItem__acoes Acoes">
 					<button
+						disabled={mode !== ActionMode.NORMAL}
 						className={`Acoes__adicionar ${
 							!quantidadeSelecionada && 'Acoes__adicionar--preencher'
 						}`}

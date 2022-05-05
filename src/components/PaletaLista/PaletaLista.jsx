@@ -1,11 +1,12 @@
 import './PaletaLista.css';
 /* import { paletas } from 'mocks/paletas.js'; */
-import { useState, useEffect  } from 'react';
-import { PaletaService } from "services/PaletaService";
+import { useState, useEffect, useCallback } from 'react';
+import { PaletaService } from 'services/PaletaService';
 import PaletaListaItem from 'components/PaletaListaItem/PaletaListaItem';
 import PaletaDetalhesModal from 'components/PaletaDetalhesModal/PaletaDetalhesModal';
+import { ActionMode } from 'constants/index';
 
-const PaletaLista = ({ paletaCriada }) => {
+const PaletaLista = ({ paletaCriada, mode, updatePaleta, deletePaleta }) => {
 	const [paletas, setPaletas] = useState([]);
 	const [paletaSelecionada, setPaletaSelecionada] = useState({});
 	const [paletaModal, setPaletaModal] = useState(false);
@@ -31,17 +32,31 @@ const PaletaLista = ({ paletaCriada }) => {
 
 	const getPaletaById = async (paletaId) => {
 		const response = await PaletaService.getById(paletaId);
-		setPaletaModal(response);
+		const mapper = {
+			[ActionMode.NORMAL]: () => setPaletaModal(response),
+			[ActionMode.ATUALIZAR]: () => updatePaleta(response),
+			[ActionMode.DELETAR]: () => deletePaleta(response),
+		};
+
+		mapper[mode]();
 	};
 
-	const adicionaPaletaNaLista = (paleta) => {
-		const lista = [...paletas, paleta];
-		setPaletas(lista);
-	};
+	const adicionaPaletaNaLista = useCallback(
+		(paleta) => {
+			const lista = [...paletas, paleta];
+			setPaletas(lista);
+		},
+		[paletas]
+	);
 
 	useEffect(() => {
-		if (paletaCriada) adicionaPaletaNaLista(paletaCriada);
-	}, [paletaCriada]);
+		if (
+			paletaCriada &&
+			!paletas.map(({ id }) => id).includes(paletaCriada.id)
+		) {
+			adicionaPaletaNaLista(paletaCriada);
+		}
+	}, [adicionaPaletaNaLista, paletaCriada, paletas]);
 
 	useEffect(() => {
 		getLista();
@@ -51,6 +66,7 @@ const PaletaLista = ({ paletaCriada }) => {
 		<div className="PaletaLista">
 			{paletas.map((paleta, index) => (
 				<PaletaListaItem
+					mode={mode}
 					key={`PaletaListaItem-${index}`}
 					paleta={paleta}
 					quantidadeSelecionada={paletaSelecionada[index]}
