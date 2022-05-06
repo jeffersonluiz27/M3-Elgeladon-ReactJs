@@ -6,7 +6,13 @@ import PaletaListaItem from 'components/PaletaListaItem/PaletaListaItem';
 import PaletaDetalhesModal from 'components/PaletaDetalhesModal/PaletaDetalhesModal';
 import { ActionMode } from 'constants/index';
 
-const PaletaLista = ({ paletaCriada, mode, updatePaleta, deletePaleta }) => {
+const PaletaLista = ({
+	paletaCriada,
+	mode,
+	updatePaleta,
+	deletePaleta,
+	paletaEditada,
+}) => {
 	const [paletas, setPaletas] = useState([]);
 	const [paletaSelecionada, setPaletaSelecionada] = useState({});
 	const [paletaModal, setPaletaModal] = useState(false);
@@ -60,7 +66,7 @@ const PaletaLista = ({ paletaCriada, mode, updatePaleta, deletePaleta }) => {
 
 	useEffect(() => {
 		getLista();
-	}, []);
+	}, [paletaEditada]);
 
 	return (
 		<div className="PaletaLista">
