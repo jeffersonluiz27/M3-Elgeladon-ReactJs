@@ -15,6 +15,7 @@ const Home = () => {
 	const [paletaParaDeletar, setPaletaParaDeletar] = useState();
 	const [modoAtual, setModoAtual] = useState(ActionMode.NORMAL);
 	const [paletaEditada, setPaletaEditada] = useState();
+	const [paletaRemovida, setPaletaRemovida] = useState();
 
 	const handleDeletePaleta = (paletaToDelete) => {
 		setPaletaParaDeletar(paletaToDelete);
@@ -51,6 +52,7 @@ const Home = () => {
 					mode={modoAtual}
 					paletaCriada={paletaParaAdicionar}
 					paletaEditada={paletaEditada}
+					paletaRemovida={paletaRemovida}
 					deletePaleta={handleDeletePaleta}
 					updatePaleta={handleUpdatePaleta}
 				/>
@@ -61,6 +63,13 @@ const Home = () => {
 						onUpdatePaleta={(paleta) => setPaletaEditada(paleta)}
 						closeModal={handleCloseModal}
 						onCreatePaleta={(paleta) => setPaletaParaAdicionar(paleta)}
+					/>
+				)}
+				{paletaParaDeletar && (
+					<DeletaPaletaModal
+						paletaParaDeletar={paletaParaDeletar}
+						closeModal={handleCloseModal}
+						onDeletePaleta={(paleta) => setPaletaRemovida(paleta)}
 					/>
 				)}
 			</div>

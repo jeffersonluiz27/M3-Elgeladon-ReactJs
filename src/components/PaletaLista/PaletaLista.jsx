@@ -12,6 +12,7 @@ const PaletaLista = ({
 	updatePaleta,
 	deletePaleta,
 	paletaEditada,
+	paletaRemovida,
 }) => {
 	const [paletas, setPaletas] = useState([]);
 	const [paletaSelecionada, setPaletaSelecionada] = useState({});
@@ -66,7 +67,7 @@ const PaletaLista = ({
 
 	useEffect(() => {
 		getLista();
-	}, [paletaEditada]);
+	}, [paletaEditada, paletaRemovida]);
 
 	return (
 		<div className="PaletaLista">
