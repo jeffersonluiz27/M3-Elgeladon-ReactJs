@@ -14,8 +14,10 @@ const PaletaLista = ({
 	paletaEditada,
 	paletaRemovida,
 }) => {
+	const selecionadas = JSON.parse(localStorage.getItem('selecionadas')) ?? {};
+
 	const [paletas, setPaletas] = useState([]);
-	const [paletaSelecionada, setPaletaSelecionada] = useState({});
+	const [paletaSelecionada, setPaletaSelecionada] = useState(selecionadas);
 	const [paletaModal, setPaletaModal] = useState(false);
 
 	const adicionarItem = (paletaIndex) => {
@@ -24,6 +26,19 @@ const PaletaLista = ({
 		};
 		setPaletaSelecionada({ ...paletaSelecionada, ...paleta });
 	};
+
+	const setSelecionadas = useCallback(() => {
+		if (!paletas.length) return;
+
+		const entries = Object.entries(paletaSelecionada);
+		const sacola = entries.map((arr) => ({
+			paletaId: paletas[arr[0]].id,
+			quantidade: arr[1],
+		}));
+
+		localStorage.setItem('sacola', JSON.stringify(sacola));
+		localStorage.setItem('selecionadas', JSON.stringify(paletaSelecionada));
+	}, [paletaSelecionada, paletas]);
 
 	const removerItem = (paletaIndex) => {
 		const paleta = {
@@ -55,6 +70,11 @@ const PaletaLista = ({
 		},
 		[paletas]
 	);
+
+	useEffect(() => {
+		setSelecionadas();
+	}, [setSelecionadas, paletaSelecionada]);
+
 
 	useEffect(() => {
 		if (

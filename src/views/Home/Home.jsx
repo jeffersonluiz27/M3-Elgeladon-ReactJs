@@ -3,9 +3,11 @@ import PaletaLista from 'components/PaletaLista/PaletaLista';
 import Navbar from 'components/Navbar/Navbar';
 import AdicionaEditaPaletaModal from 'components/AdicionaEditaPaletaModal/AdicionaEditaPaletaModal';
 import DeletaPaletaModal from 'components/DeletaPaletaModal/DeletaPaletaModal';
+import SacolaModal from 'components/SacolaModal/SacolaModal';
 
 import { useState } from 'react';
 import { ActionMode } from 'constants/index';
+import { SacolaService } from 'services/SacolaService';
 
 const Home = () => {
 	const [canShowAdicionaPaletaModal, setCanShowAdicionaPaletaModal] =
@@ -16,6 +18,7 @@ const Home = () => {
 	const [modoAtual, setModoAtual] = useState(ActionMode.NORMAL);
 	const [paletaEditada, setPaletaEditada] = useState();
 	const [paletaRemovida, setPaletaRemovida] = useState();
+	const [canOpenBag, setCanOpenBag] = useState();
 
 	const handleDeletePaleta = (paletaToDelete) => {
 		setPaletaParaDeletar(paletaToDelete);
@@ -39,12 +42,22 @@ const Home = () => {
 		setModoAtual(ActionMode.NORMAL);
 	};
 
+	const abrirSacola = async () => {
+		const lista = JSON.parse(localStorage.getItem('sacola'));
+		const sacola = lista.filter((i) => i.quantidade > 0);
+
+		await SacolaService.create(sacola);
+
+		setCanOpenBag(true);
+	};
+
 	return (
 		<div className="Home">
 			<Navbar
 				mode={modoAtual}
 				createPaleta={() => setCanShowAdicionaPaletaModal(true)}
 				deletePaleta={() => handleActions(ActionMode.DELETAR)}
+				openBag={abrirSacola}
 				updatePaleta={() => handleActions(ActionMode.ATUALIZAR)}
 			/>
 			<div className="Home__container">
@@ -65,6 +78,7 @@ const Home = () => {
 						onCreatePaleta={(paleta) => setPaletaParaAdicionar(paleta)}
 					/>
 				)}
+				{canOpenBag && <SacolaModal closeModal={() => setCanOpenBag(false)} />}
 				{paletaParaDeletar && (
 					<DeletaPaletaModal
 						paletaParaDeletar={paletaParaDeletar}
